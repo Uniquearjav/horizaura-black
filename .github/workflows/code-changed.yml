@@ -1,0 +1,31 @@
+name: Code changed
+
+on:
+  push:
+    branches:
+      - main # Replace with your branch name
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Zip code
+      run: zip -r code.zip .
+      
+    - name: Send email
+      uses: dawidd6/action-send-mail@v2
+      with:
+        server_address: smtp.gmail.com
+        server_port: 587
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: Code changed on ${{ github.repository }}
+        body: Code changed on ${{ github.repository }} at ${{ github.event.head_commit.timestamp }}
+        from: Your Name <your.email@example.com>
+        to: arjavchoudhary608@gmail.com
+        attachments: |
+          code.zip
